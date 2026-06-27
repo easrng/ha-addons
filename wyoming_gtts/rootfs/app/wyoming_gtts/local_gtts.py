@@ -69,6 +69,6 @@ class LocalGTTS:
                                                 ctypes.cast(self.frames_in_buf, c_int_p))
         for i in range(self.buf_len):
             val = self.buf_fp[i] * 2147483647
-            self.buf_ip[i] = 0 if math.isnan(val) else val
+            self.buf_ip[i] = 0 if math.isnan(val) else int(val)
 
         return res, self.audio_buffer[:]
