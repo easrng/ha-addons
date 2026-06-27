@@ -1,12 +1,11 @@
-name: Build Add-on
+name: Build Add-ons
 on:
   release:
     types: [published]
   workflow_dispatch:  # Allow manual triggers
 
 env:
-  ARCHITECTURES: '["amd64"]'  # Only build for AMD64
-  IMAGE_NAME: ha-addon-squeezelite
+  ARCHITECTURES: '["amd64"]'  # Add more architectures here if needed e.g., '["amd64", "aarch64"]'
 
 permissions:
   contents: read
@@ -18,56 +17,72 @@ jobs:
     name: Initialize build
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.matrix.outputs.matrix }}
+      addons: ${{ steps.discover.outputs.addons }}
+      arch_matrix: ${{ steps.matrix.outputs.matrix }}
     steps:
       - uses: actions/checkout@v6
+      
+      - name: Discover add-ons
+        id: discover
+        run: |
+          # Find all top-level directories (ignoring hidden ones starting with a dot)
+          ADDONS=$(find . -mindepth 1 -maxdepth 1 -type d ! -name '.*' -exec basename {} \; | jq -R -s -c 'split("\n")[:-1]')
+          echo "addons=$ADDONS" >> "$GITHUB_OUTPUT"
+          
       - name: Get build matrix
         id: matrix
         uses: home-assistant/builder/actions/prepare-multi-arch-matrix@2026.06.0
         with:
           architectures: ${{ env.ARCHITECTURES }}
-          image-name: ${{ env.IMAGE_NAME }}
+          image-name: dummy  # Overridden in the build job dynamically
 
   build:
-    name: Build ${{ matrix.arch }} image
+    name: Build ${{ matrix.addon }} (${{ matrix.arch.arch }})
     needs: init
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.arch.os }}
     permissions:
       contents: read
       id-token: write
       packages: write
     strategy:
       fail-fast: false
-      matrix: ${{ fromJSON(needs.init.outputs.matrix) }}
+      matrix:
+        addon: ${{ fromJSON(needs.init.outputs.addons) }}
+        arch: ${{ fromJSON(needs.init.outputs.arch_matrix) }}
     steps:
       - uses: actions/checkout@v6
+      
       - name: Build image
         uses: home-assistant/builder/actions/build-image@2026.06.0
         with:
-          context: ./squeezelite
-          arch: ${{ matrix.arch }}
+          context: ./${{ matrix.addon }}
+          arch: ${{ matrix.arch.arch }}
           container-registry-password: ${{ secrets.GITHUB_TOKEN }}
-          image: ${{ matrix.image }}
+          image: ha-addon-${{ matrix.addon }}
           image-tags: |
-            ${{ github.event.release.tag_name }}
+            ${{ github.event.release.tag_name || 'latest' }}
             latest
           push: "true"
-          version: ${{ github.event.release.tag_name }}
+          version: ${{ github.event.release.tag_name || 'latest' }}
 
   manifest:
-    name: Publish multi-arch manifest
+    name: Publish manifest for ${{ matrix.addon }}
     needs: [init, build]
     runs-on: ubuntu-latest
     permissions:
       id-token: write
       packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        addon: ${{ fromJSON(needs.init.outputs.addons) }}
     steps:
       - name: Publish multi-arch manifest
         uses: home-assistant/builder/actions/publish-multi-arch-manifest@2026.06.0
         with:
           architectures: ${{ env.ARCHITECTURES }}
           container-registry-password: ${{ secrets.GITHUB_TOKEN }}
-          image-name: ${{ env.IMAGE_NAME }}
+          image-name: ha-addon-${{ matrix.addon }}
           image-tags: |
-            ${{ github.event.release.tag_name }}
+            ${{ github.event.release.tag_name || 'latest' }}
             latest

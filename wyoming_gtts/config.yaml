@@ -1,0 +1,22 @@
+name: "Wyoming gTTS"
+version: "1.0.0"
+slug: "wyoming_gtts"
+description: "Local Google TTS using the Wyoming protocol"
+image: ghcr.io/easrng/{arch}-ha-addon-wyoming_gtts
+arch:
+  - amd64
+# We map the share folder so you have a place to drop the libchrometts.so and data files
+map:
+  - share:rw
+options:
+  voice: "en-US-hol-female"
+  port: 15000
+  data_dir: "/share/wyoming_gtts"
+schema:
+  voice: str
+  port: port
+  data_dir: str
+ports:
+  15000/tcp: 15000
+ports_description:
+  15000/tcp: "Wyoming Protocol Port"

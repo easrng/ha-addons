@@ -9,7 +9,7 @@ Please visit [Logitech Media Server][Logitech Media Server Addon] page to instal
 
 ## Install
 1. Add this url to your hass.io addons repos: \
-`https://github.com/easrng/ha-hassio-squeezelite`
+`https://github.com/easrng/ha-addons`
 2. Update addons list.
 3. Install Squeezelite.
 
@@ -58,7 +58,7 @@ Nice value to start squeezelite with defaults to `-10`.
 Passed to squeezelite on startup after above options are processed
 
 ##  Urls
-[Add-on link](https://github.com/easrng/ha-addon-squeezelite/) \
+[Add-on link](https://github.com/easrng/ha-addons/) \
 [Logitech Media Server Addon](https://github.com/pssc/ha-addon-lms/) \
 [Squeezelite](https://github.com/ralph-irving/squeezelite)
 

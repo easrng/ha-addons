@@ -101,9 +101,9 @@ LABEL \
     org.opencontainers.image.vendor="easrng" \
     org.opencontainers.image.authors="Phillip, Adrian & Ralph" \
     org.opencontainers.image.licenses="Multiple" \
-    org.opencontainers.image.url="https://github.com/easrng/ha-addon-squeezelite/" \
-    org.opencontainers.image.source="https://github.com/easrng/ha-addon-squeezelite/squeezelite/" \
-    org.opencontainers.image.documentation="https://github.com/easrng/ha-addon-squeezelite/blob/master/squeezelite/DOCS.md" \
+    org.opencontainers.image.url="https://github.com/easrng/ha-addons/" \
+    org.opencontainers.image.source="https://github.com/easrng/ha-addons/squeezelite/" \
+    org.opencontainers.image.documentation="https://github.com/easrng/ha-addons/blob/master/squeezelite/DOCS.md" \
     org.opencontainers.image.created=${BUILD_DATE} \
     org.opencontainers.image.revision=${BUILD_REF} \
     org.opencontainers.image.version=${BUILD_VERSION}
