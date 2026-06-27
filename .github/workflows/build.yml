@@ -106,7 +106,7 @@ jobs:
       - name: Publish multi-arch manifest
         uses: home-assistant/builder/actions/publish-multi-arch-manifest@2026.06.0
         with:
-          architectures: ${{ env.ARCHITECTURES }}
+          architectures: '["amd64"]'
           container-registry-password: ${{ secrets.GITHUB_TOKEN }}
           image-name: ghcr.io/${{ github.repository_owner }}/ha-addon-${{ matrix.addon }}
           image-tags: |
