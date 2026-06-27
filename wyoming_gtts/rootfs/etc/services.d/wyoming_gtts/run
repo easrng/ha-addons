@@ -1,4 +1,4 @@
-#!/usr/bin/env bashio
+#!/usr/bin/with-contenv bashio
 
 # Read settings from the Home Assistant GUI
 VOICE=$(bashio::config 'voice')
