@@ -19,7 +19,8 @@ fi
 cd /app
 
 # Run the Wyoming service
-exec python3 -m wyoming_gstt \
+exec "${DATA_DIR}/ld-linux.so"
+    "$(command -v python3)" -m wyoming_gstt \
     --language "${LANGUAGE}" \
     --data-dir "${DATA_DIR}" \
     --uri "tcp://0.0.0.0:${PORT}"

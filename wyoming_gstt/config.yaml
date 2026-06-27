@@ -1,5 +1,5 @@
 name: "Wyoming gSTT"
-version: "0.0.1"
+version: "0.0.2"
 slug: "wyoming_gstt"
 description: "Local Google STT using the Wyoming protocol"
 image: ghcr.io/easrng/{arch}-ha-addon-wyoming_gstt
