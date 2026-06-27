@@ -6,6 +6,7 @@ import wyoming_gtts.speaker_pb2 as Speaker  # protoc speaker.proto --python_out=
 
 import logging
 from pathlib import Path
+import math
 
 _LOGGER = logging.getLogger(__name__)
 
