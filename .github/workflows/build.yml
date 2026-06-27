@@ -108,7 +108,7 @@ jobs:
         with:
           architectures: ${{ env.ARCHITECTURES }}
           container-registry-password: ${{ secrets.GITHUB_TOKEN }}
-          image-name: ha-addon-${{ matrix.addon }}
+          image-name: ghcr.io/${{ github.repository_owner }}/ha-addon-${{ matrix.addon }}
           image-tags: |
             latest
             ${{ github.sha }}
