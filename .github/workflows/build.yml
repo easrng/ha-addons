@@ -3,9 +3,6 @@ on:
   push:
   workflow_dispatch:
 
-env:
-  ARCHITECTURES: '["amd64"]'
-
 permissions:
   contents: read
   packages: write
@@ -38,7 +35,7 @@ jobs:
       fail-fast: false
       matrix:
         addon: ${{ fromJSON(needs.check.outputs.addons) }}
-        arch: ["amd64"]
+        arch: ["amd64", "aarch64"]
         os: ["ubuntu-latest"]
     steps:
       - uses: actions/checkout@v6
@@ -71,7 +68,7 @@ jobs:
       - name: Publish multi-arch manifest
         uses: home-assistant/builder/actions/publish-multi-arch-manifest@2026.06.0
         with:
-          architectures: ${{ env.ARCHITECTURES }}
+          architectures: '["amd64","aarch64"]'
           container-registry-password: ${{ secrets.GITHUB_TOKEN }}
           image-name: ha-addon-${{ matrix.addon.dir }}
           image-tags: |

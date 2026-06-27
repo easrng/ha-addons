@@ -1,5 +1,5 @@
 name: Squeezelite
-version: 0.0.21
+version: 0.0.22
 slug: squeezelite
 description: Squeezelite player for LMS the Lyrion Music Server, formerly the Logitech Media Server on home assistant
 url: https://github.com/easrng/ha-addons
@@ -7,6 +7,7 @@ image: ghcr.io/easrng/{arch}-ha-addon-squeezelite
 startup: services
 arch:
   - amd64
+  - aarch64
 map:
   - config:rw
 boot: auto

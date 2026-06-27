@@ -1,10 +1,11 @@
 name: "Wyoming gTTS"
-version: "0.0.22"
+version: "0.0.23"
 slug: "wyoming_gtts"
 description: "Local Google TTS using the Wyoming protocol"
 image: ghcr.io/easrng/{arch}-ha-addon-wyoming_gtts
 arch:
   - amd64
+  - aarch64
 # We map the share folder so you have a place to drop the libchrometts.so and data files
 map:
   - share:rw
