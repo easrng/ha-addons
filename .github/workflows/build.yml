@@ -1,7 +1,8 @@
 name: Build Add-ons
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - master
   workflow_dispatch:  # Allow manual triggers
 
 env:
@@ -26,7 +27,7 @@ jobs:
         run: |
           # Find all top-level directories (ignoring hidden ones starting with a dot)
           ADDONS=$(find . -mindepth 1 -maxdepth 1 -type d ! -name '.*' -exec basename {} \; | jq -R -s -c 'split("\n")[:-1]')
-          echo "addons=$ADDONS" | tee /dev/stderr >> "$GITHUB_OUTPUT"
+          echo "addons=$ADDONS" >> "$GITHUB_OUTPUT"
 
   build:
     name: Build ${{ matrix.addon }} (${{ matrix.arch }})
@@ -52,10 +53,10 @@ jobs:
           container-registry-password: ${{ secrets.GITHUB_TOKEN }}
           image: ha-addon-${{ matrix.addon }}
           image-tags: |
-            ${{ github.event.release.tag_name || 'latest' }}
             latest
+            ${{ github.sha }}
           push: "true"
-          version: ${{ github.event.release.tag_name || 'latest' }}
+          version: latest
 
   manifest:
     name: Publish manifest for ${{ matrix.addon }}
@@ -76,5 +77,5 @@ jobs:
           container-registry-password: ${{ secrets.GITHUB_TOKEN }}
           image-name: ha-addon-${{ matrix.addon }}
           image-tags: |
-            ${{ github.event.release.tag_name || 'latest' }}
             latest
+            ${{ github.sha }}
