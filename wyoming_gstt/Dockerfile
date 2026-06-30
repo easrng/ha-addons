@@ -6,6 +6,8 @@ RUN apt-get update && apt-get install -y \
     python3-venv \
     python3-pip \
     libc++1 \
+    gdb \
+    qemu-user \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
