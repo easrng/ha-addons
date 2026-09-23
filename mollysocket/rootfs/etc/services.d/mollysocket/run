@@ -1,0 +1,41 @@
+#!/usr/bin/with-contenv bashio
+
+# Read settings from the Home Assistant GUI
+HOST=$(bashio::config 'host')
+PORT=$(bashio::config 'port')
+VAPID_PRIVKEY=$(bashio::config 'vapid_privkey' '')
+
+bashio::log.info "Starting MollySocket..."
+bashio::log.info "Configured Host: ${HOST}"
+bashio::log.info "Configured Port: ${PORT}"
+
+OPTIONS_FILE=/data/options.json
+DATA_DIR=/data
+CONF_FILE="${DATA_DIR}/mollysocket.toml"
+DB_FILE="${DATA_DIR}/mollysocket.db"
+VAPID_FILE="${DATA_DIR}/vapid_key"
+
+# Persist (or auto-generate) the VAPID key so the QR code is available
+if [ -n "${VAPID_PRIVKEY}" ]; then
+    bashio::log.info "Using VAPID private key from configuration"
+    printf '%s' "${VAPID_PRIVKEY}" > "${VAPID_FILE}"
+elif [ ! -s "${VAPID_FILE}" ]; then
+    bashio::log.info "Generating a new VAPID private key"
+    /usr/local/bin/mollysocket vapid gen > "${VAPID_FILE}" 2>/dev/null
+else
+    bashio::log.info "Reusing existing VAPID private key"
+fi
+
+# Generate the TOML config file
+# shellcheck disable=SC2046
+cat > "${CONF_FILE}" <<EOF
+host = "${HOST}"
+port = ${PORT}
+webserver = true
+db = "${DB_FILE}"
+vapid_key_file = "${VAPID_FILE}"
+allowed_endpoints = $(jq -c '.allowed_endpoints // ["*"]' "${OPTIONS_FILE}")
+allowed_uuids = $(jq -c '.allowed_uuids // ["*"]' "${OPTIONS_FILE}")
+EOF
+
+exec /usr/local/bin/mollysocket -c "${CONF_FILE}" server

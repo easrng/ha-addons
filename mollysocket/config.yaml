@@ -1,0 +1,28 @@
+name: "MollySocket"
+version: "1.7.1"
+slug: "mollysocket"
+description: "Signal notifications for Molly via UnifiedPush, running as a linked device without any encryption keys"
+url: "https://github.com/mollyim/mollysocket"
+image: ghcr.io/easrng/{arch}-ha-addon-mollysocket
+init: false
+arch:
+  - amd64
+  - aarch64
+ports:
+  8020/tcp: 8020
+ports_description:
+  8020/tcp: "MollySocket web server (QR code and registration page)"
+options:
+  host: "0.0.0.0"
+  port: 8020
+  allowed_endpoints: ["*"]
+  allowed_uuids: ["*"]
+  vapid_privkey: ""
+schema:
+  host: str
+  port: port
+  allowed_endpoints:
+    - str
+  allowed_uuids:
+    - str
+  vapid_privkey: str?
